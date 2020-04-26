@@ -1,13 +1,22 @@
-import 'package:despesas_pessoais/models/transaction.dart';
-import 'package:intl/intl.dart';
+import 'dart:math';
+
+import 'package:despesas_pessoais/components/transaction_form.dart';
 import 'package:flutter/material.dart';
+
+import 'components/transaction_list.dart';
+import 'models/transaction.dart';
 
 void main() => runApp(MaterialApp(
       title: 'Despesas Pessoais',
       home: MyHomePage(),
     ));
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
   final _transactions = [
     Transaction(
         id: 't1',
@@ -18,68 +27,57 @@ class MyHomePage extends StatelessWidget {
         id: 't2', title: "Conta de Luz", value: 40.43, date: DateTime.now()),
   ];
 
+  _addTransaction(String title, double value) {
+    final newTransaction = new Transaction(
+      id: Random().nextDouble().toString(),
+      title: title,
+      value: value,
+      date: DateTime.now(),
+    );
+
+    setState(() {
+      _transactions.add(newTransaction);
+    });
+
+    Navigator.of(context).pop();
+  }
+
+  _openTransactionModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) {
+        return TransactionForm(onSubmit: _addTransaction);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Despesas Pessoais"),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Card(
-            child: Text("Gráfico"),
-            elevation: 5,
-          ),
-          Column(
-            children: _transactions.map((tr) {
-              return Card(
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.symmetric(
-                        horizontal: 15,
-                        vertical: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.purple,
-                          width: 2,
-                        ),
-                      ),
-                      padding: EdgeInsets.all(10),
-                      child: Text(
-                        "R\$ ${tr.value.toStringAsFixed(2)}",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.purple,
-                        ),
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          tr.title,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          DateFormat('d MMM y').format(tr.date),
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              );
-            }).toList(),
-          ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () => _openTransactionModal(context),
+          )
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => _openTransactionModal(context),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Card(
+              child: Text("Gráfico"),
+              elevation: 5,
+            ),
+            TransactionList(transactions: _transactions),
+          ],
+        ),
       ),
     );
   }
