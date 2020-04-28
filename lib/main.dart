@@ -9,6 +9,26 @@ import 'models/transaction.dart';
 void main() => runApp(MaterialApp(
       title: 'Despesas Pessoais',
       home: MyHomePage(),
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+        accentColor: Colors.amber,
+        fontFamily: 'Quicksand',
+        textTheme: ThemeData.light().textTheme.copyWith(
+                title: TextStyle(
+              fontFamily: "OpenSans",
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+            )),
+        appBarTheme: AppBarTheme(
+          textTheme: ThemeData.light().textTheme.copyWith(
+                title: TextStyle(
+                  fontFamily: "OpenSans",
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+        ),
+      ),
     ));
 
 class MyHomePage extends StatefulWidget {
@@ -17,7 +37,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _transactions = [
+  final List<Transaction> _transactions = [
     Transaction(
         id: 't1',
         title: "Novo Tênis de Corrida",
