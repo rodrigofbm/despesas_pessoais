@@ -9,32 +9,36 @@ class TransactionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 400,
-      child: renderList(context, transactions, onRemove),
-    );
+    return renderList(context, transactions, onRemove);
   }
 }
 
 Widget renderList(BuildContext context, List<Transaction> transactions,
     Function(String) onRemove) {
   if (transactions.isEmpty) {
-    return Column(
-      children: <Widget>[
-        SizedBox(height: 20),
-        Text(
-          "Nenhuma transação cadastrada",
-          style: Theme.of(context).textTheme.title,
-        ),
-        SizedBox(height: 20),
-        Container(
-          height: 200,
-          child: Image.asset(
-            "assets/images/waiting.png",
-            fit: BoxFit.cover,
-          ),
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (_, constraints) {
+        return Column(
+          children: <Widget>[
+            SizedBox(height: constraints.maxHeight * 0.05),
+            Container(
+              height: constraints.maxHeight * 0.15,
+              child: Text(
+                "Nenhuma transação cadastrada",
+                style: Theme.of(context).textTheme.title,
+              ),
+            ),
+            SizedBox(height: constraints.maxHeight * 0.05),
+            Container(
+              height: constraints.maxHeight * 0.65,
+              child: Image.asset(
+                "assets/images/waiting.png",
+                fit: BoxFit.cover,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
